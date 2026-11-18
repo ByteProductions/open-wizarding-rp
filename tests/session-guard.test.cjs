@@ -2,6 +2,13 @@ const {test} = require('node:test');
 const assert = require('node:assert/strict');
 const {authorizeSession} = require('../dist/session-guard.js');
 const valid=()=>({accountId:1,characterId:2,generation:'connection-1',trust:'verified'});
+test('non-string capability values fail before consulting the permission reader',async()=>{
+  for(const capability of [undefined,null,7,{toString:()=> 'school.teach'}]) {
+    let reads=0;
+    await assert.rejects(authorizeSession(7,capability,{read:()=>{reads++;return valid();},hasCapability:async()=>true}));
+    assert.equal(reads,0);
+  }
+});
 test('verified server session and granted capability produce a frozen identity',async()=>{
   const session=valid();
   const result=await authorizeSession(7,'school.teach',{read:()=>session,hasCapability:async()=>true});
