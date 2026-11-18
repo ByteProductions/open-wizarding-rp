@@ -2,7 +2,7 @@
 
 Use short-lived branches from current main: feat/<topic>, fix/<topic>, docs/<topic>, or chore/<topic>. Open a draft pull request early. Keep changes focused; link the relevant roadmap milestone. Main must remain releasable.
 
-Before review, run `python scripts/check_repository.py` and all tests relevant to the change. Include validation evidence, compatibility impact and rollback steps. No gameplay code exists yet; repository checks are not gameplay tests.
+Before review, run `python scripts/check_repository.py` and all tests relevant to the change. Include validation evidence, compatibility impact and rollback steps. For TypeScript changes, run `npm ci --ignore-scripts`, `npm test` and `npm audit --audit-level=moderate`. The school library has unit tests; native multiplayer validation is still pending.
 
 Merging requires resolved conversations and passing required CI against an up-to-date branch. In the current solo-maintainer configuration, independent approval is not required: the maintainer reviews the diff and validation evidence before merging their own PR. New commits dismiss any stale approvals. Only squash merges are enabled. Never force-push main, bypass protections, or publish secrets. Bring main into a working branch using an ordinary merge when needed; do not rewrite shared history.
 

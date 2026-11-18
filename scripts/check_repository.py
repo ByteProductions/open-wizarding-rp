@@ -30,4 +30,4 @@ for required in ('README.md', 'LICENSE', 'SECURITY.md', 'CONTRIBUTING.md', '.git
         errors.append(f'Missing {required}')
 if errors:
     raise SystemExit('\n'.join(errors))
-print('Repository policy checks passed. Gameplay implementation not yet present.')
+print('Repository policy checks passed. This check does not validate gameplay.')

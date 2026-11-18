@@ -10,11 +10,35 @@ concurrency:
   group: repository-checks-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 jobs:
+  school-tests:
+    name: school-tests-node-${{ matrix.node }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['22', '24']
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm ci --ignore-scripts
+      - run: npm test
+      - run: npm audit --audit-level=moderate
   repository-policy:
     name: repository-policy
+    needs: school-tests
+    if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - name: Require all school test jobs to succeed
+        env:
+          TEST_RESULT: ${{ needs.school-tests.result }}
+        run: test "$TEST_RESULT" = success
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false

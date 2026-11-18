@@ -7,7 +7,7 @@ An open-source, modular roleplay framework being developed for **ArcaneMP and Ho
 
 The goal is to give server owners an understandable, configurable foundation for school life, learned magic, careers, crafting and a persistent economy. Our original framework will be shared under the **MIT License**, with documentation and a reference school-server configuration that others can adapt.
 
-> **Current status: planning and repository bootstrap.** This repository contains the roadmap, contribution policies and repository checks. It does not yet contain a playable framework, game-server installer, implemented gameplay modules or a supported deployment release.
+> **Current status: early implementation.** The repository includes a tested school-policy library and session authorization guard, plus the roadmap and repository policies. Runtime persistence, game UI and native spell enforcement are not integrated yet. There is no playable framework, game-server installer or supported deployment release.
 
 ## Contents
 
@@ -40,7 +40,9 @@ We will reuse suitable platform services and public mods where their interfaces,
 | Repository-content CI checks | Available; these are not gameplay tests |
 | Feature roadmap | Documented |
 | Mod compatibility matrix | Planned; no certified mod profile published |
-| School progression and spell enforcement | Planned |
+| School progression rules | Implemented as a tested library; not connected to the game |
+| Session authorization guard | Implemented and unit tested; requires a verified server identity source |
+| Native spell enforcement and persistence | Integration pending |
 | Economy, crafting and world integrations | Planned |
 | Multiplayer acceptance tests and installation packages | Planned |
 
@@ -81,7 +83,7 @@ An early requirement is proving that restricted spells stay restricted through e
 
 ## Architecture
 
-The planned implementation uses TypeScript resources with clear boundaries between gameplay rules, runtime adapters and client presentation. These components have not yet been implemented.
+The implementation uses TypeScript with clear boundaries between gameplay rules, runtime adapters and client presentation. The first domain library and session guard are implemented; runtime adapters and the interface are pending. See the [school-core design](docs/school-core-design.md) and [compatibility baseline](docs/COMPATIBILITY.md).
 
 ```text
 Player interface and input
@@ -160,6 +162,18 @@ On systems where Python 3 is named `python3`, use that command instead.
 
 The check inspects Git-tracked files for prohibited artifacts, missing policy files, oversized files and unsafe workflow references. Newly created files must be staged for this check to inspect them. It is a limited repository guard, not a comprehensive secret scanner or a gameplay test suite.
 
+### Run the school-library tests
+
+Install Node.js 22 or newer, then run:
+
+```sh
+npm ci --ignore-scripts
+npm test
+npm audit --audit-level=moderate
+```
+
+TypeScript is a pinned development-only dependency. The tests use Node's built-in runner and do not require the game or a database.
+
 ### Host a server
 
 There is no install-and-play release from this project yet. The eventual release instructions will document the supported runtime, required dependencies, configuration, database setup and migration sequence. Do not treat cloning this repository as installing an RP server.
@@ -178,7 +192,7 @@ README.md
 SECURITY.md
 ```
 
-Gameplay resource directories and runtime dependency manifests will be introduced with implementation, rather than documented as if they already exist.
+The `src/` directory contains school-policy transitions and the session guard; `tests/` contains their regression tests. `package.json` and its lockfile pin development dependencies. This library is not yet an ArcaneMP resource package.
 
 ## Security and validation
 
@@ -193,7 +207,7 @@ The [security policy](SECURITY.md) defines the engineering requirements. In part
 
 GitHub secret scanning, push protection, vulnerability alerts and automated security updates are enabled for this repository. CI uses a commit-pinned checkout action, read-only permissions and non-persisted checkout credentials. External contributors' workflow runs require approval.
 
-Language-specific analysis, dependency auditing and gameplay tests will be added with implementation. Existing CI success means the repository checks passed; it does not establish that an RP server is secure or playable.
+CI now compiles strict TypeScript, runs domain/session tests on Node 22 and 24, audits npm dependencies and applies repository checks. The required repository-policy check depends on both test jobs succeeding. Native multiplayer tests and runtime security validation are still pending; passing unit tests does not establish that an RP server is secure or playable.
 
 Report security issues privately through [GitHub vulnerability reporting](https://github.com/ByteProductions/open-wizarding-rp/security/advisories/new). Do not include credentials or player information in public issues.
 

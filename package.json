@@ -1,0 +1,15 @@
+{
+  "name": "@byteproductions/open-wizarding-rp",
+  "version": "0.1.0-dev.0",
+  "private": true,
+  "description": "Original roleplay rules and adapters for ArcaneMP",
+  "license": "MIT",
+  "type": "commonjs",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build && node --test tests/*.test.cjs",
+    "check": "npm test && python scripts/check_repository.py"
+  },
+  "devDependencies": { "typescript": "7.0.2" }
+}
